@@ -1,0 +1,15 @@
+spring:
+  application:
+    name: product-service
+  kafka:
+    bootstrap-servers: localhost:9092
+    group-id: product-service-group
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+  datasource:
+    url: jdbc:postgresql://localhost:5432/product_service_eda
+    username: postgres
+    password: postgres
+    driver-class-name: org.postgresql.Driver
