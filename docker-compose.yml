@@ -38,12 +38,9 @@ services:
       KAFKA_LOG_DIRS: /tmp/kraft-combined-logs
     networks:
       - eda_network
-    volumes:
-      - kafka_data:/tmp/kraft-combined-logs
 
 networks:
   eda_network:
     driver: bridge
 volumes:
   postgres_data:
-  kafka_data:
