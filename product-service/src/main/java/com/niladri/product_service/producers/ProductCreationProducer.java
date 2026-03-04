@@ -1,6 +1,9 @@
 package com.niladri.product_service.producers;
 
+import java.util.concurrent.CompletableFuture;
+
 import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.kafka.support.SendResult;
 import org.springframework.stereotype.Service;
 
 import com.niladri.product_service.events.ProductCreationEvent;
@@ -15,8 +18,8 @@ public class ProductCreationProducer {
 
     private final KafkaTemplate<String, Object> kafkaTemplate;
 
-    public void publishProductCreationEvent(String topicName, ProductCreationEvent event) {
-        kafkaTemplate.send(topicName, event)
+    public void publishProductCreationEvent(String topicName, String key, ProductCreationEvent event) {
+        kafkaTemplate.send(topicName, key, event)
                 .whenComplete((result, exception) -> {
                     if (exception != null) {
                         log.error("Failed to send product creation event to topic: {}", topicName, exception);

@@ -2,6 +2,7 @@ package com.niladri.product_service.service.impl;
 
 import org.springframework.stereotype.Service;
 
+import com.niladri.product_service.constants.Topics;
 import com.niladri.product_service.dto.ProductDto;
 import com.niladri.product_service.events.ProductCreationEvent;
 import com.niladri.product_service.model.Product;
@@ -15,24 +16,25 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ProductService implements IProductService {
 
-    private final ProductRepository productRepository;
-    private final ProductCreationProducer productCreationProducer;
+        private final ProductRepository productRepository;
+        private final ProductCreationProducer productCreationProducer;
 
-    @Override
-    public void createProduct(ProductDto productDto) {
-        Product product = Product.builder()
-                .name(productDto.name())
-                .description(productDto.description())
-                .price(productDto.price())
-                .build();
-        productRepository.save(product);
-        productCreationProducer.publishProductCreationEvent("product-created-event-topic",
-                ProductCreationEvent.builder()
-                        .productId(product.getId().toString())
-                        .name(product.getName())
-                        .description(product.getDescription())
-                        .price(product.getPrice())
-                        .build());
+        @Override
+        public void createProduct(ProductDto productDto) {
+                Product product = Product.builder()
+                                .name(productDto.name())
+                                .description(productDto.description())
+                                .price(productDto.price())
+                                .build();
+                Product savedProduct = productRepository.save(product);
+                productCreationProducer.publishProductCreationEvent(Topics.PRODUCT_CREATED,
+                                savedProduct.getId().toString(),
+                                ProductCreationEvent.builder()
+                                                .productId(savedProduct.getId().toString())
+                                                .name(savedProduct.getName())
+                                                .description(savedProduct.getDescription())
+                                                .price(product.getPrice())
+                                                .build());
 
-    }
+        }
 }

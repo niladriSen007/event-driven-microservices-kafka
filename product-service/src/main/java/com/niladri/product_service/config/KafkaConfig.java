@@ -21,6 +21,8 @@ import org.springframework.kafka.core.ProducerFactory;
 import org.springframework.kafka.support.serializer.JacksonJsonDeserializer;
 import org.springframework.kafka.support.serializer.JacksonJsonSerializer;
 
+import com.niladri.product_service.constants.Topics;
+
 import lombok.extern.slf4j.Slf4j;
 
 @Configuration
@@ -70,7 +72,7 @@ public class KafkaConfig {
 
     @Bean
     public NewTopic createProductTopic() {
-        return TopicBuilder.name("product-created-event-topic")
+        return TopicBuilder.name(Topics.PRODUCT_CREATED)
                 .partitions(1)
                 .replicas(1)
                 .configs(Map.of("min.insync.replicas", "1"))
