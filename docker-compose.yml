@@ -35,6 +35,7 @@ services:
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
       KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+      KAFKA_MIN_INSYNC_REPLICAS: 1
       KAFKA_LOG_DIRS: /tmp/kraft-combined-logs
     networks:
       - eda_network
