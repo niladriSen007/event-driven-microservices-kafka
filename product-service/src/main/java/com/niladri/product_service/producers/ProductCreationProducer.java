@@ -3,7 +3,7 @@ package com.niladri.product_service.producers;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
-import com.niladri.product_service.events.ProductCreationEvent;
+import com.niladri.common.events.ProductCreationEvent;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

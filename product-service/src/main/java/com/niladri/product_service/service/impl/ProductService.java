@@ -2,9 +2,9 @@ package com.niladri.product_service.service.impl;
 
 import org.springframework.stereotype.Service;
 
-import com.niladri.product_service.constants.Topics;
+import com.niladri.common.constants.Topics;
 import com.niladri.product_service.dto.ProductDto;
-import com.niladri.product_service.events.ProductCreationEvent;
+import com.niladri.common.events.ProductCreationEvent;
 import com.niladri.product_service.model.Product;
 import com.niladri.product_service.producers.ProductCreationProducer;
 import com.niladri.product_service.repository.ProductRepository;

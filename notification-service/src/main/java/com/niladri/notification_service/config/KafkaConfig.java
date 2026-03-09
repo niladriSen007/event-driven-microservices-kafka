@@ -1,9 +1,8 @@
-package com.niladri.product_service.config;
+package com.niladri.notification_service.config;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
@@ -12,7 +11,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
-import org.springframework.kafka.config.TopicBuilder;
 import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaProducerFactory;
@@ -20,8 +18,6 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.ProducerFactory;
 import org.springframework.kafka.support.serializer.JacksonJsonDeserializer;
 import org.springframework.kafka.support.serializer.JacksonJsonSerializer;
-
-import com.niladri.common.constants.Topics;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -32,7 +28,7 @@ public class KafkaConfig {
     @Value("${spring.kafka.bootstrap-servers:localhost:9092}")
     private String bootstrapServer;
 
-    @Value("${spring.kafka.consumer.group-id:product-service-group}")
+    @Value("${spring.kafka.consumer.group-id:notification-service-group}")
     private String groupId;
 
     @Value("${spring.kafka.producer.properties.acks:all}")
@@ -59,7 +55,6 @@ public class KafkaConfig {
         producerProps.put(ProducerConfig.REQUEST_TIMEOUT_MS_CONFIG, requestTimeoutMs);
         producerProps.put(ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG, true);
         producerProps.put(ProducerConfig.MAX_IN_FLIGHT_REQUESTS_PER_CONNECTION, 5);
-        // producerProps.put(ProducerConfig.RETRIES_CONFIG, Integer.MAX_VALUE);
         log.info("Kafka Producer Configured with bootstrap server: {}", bootstrapServer);
         return new DefaultKafkaProducerFactory<>(producerProps);
     }
@@ -72,6 +67,7 @@ public class KafkaConfig {
         consumerProps.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JacksonJsonDeserializer.class);
         consumerProps.put(ConsumerConfig.GROUP_ID_CONFIG, groupId);
         consumerProps.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
+        consumerProps.put(JacksonJsonDeserializer.TRUSTED_PACKAGES, "*");
         log.info("Kafka Consumer Configured with bootstrap server: {}", bootstrapServer);
         return new DefaultKafkaConsumerFactory<>(consumerProps);
     }
@@ -87,14 +83,5 @@ public class KafkaConfig {
         ConcurrentKafkaListenerContainerFactory<String, Object> factory = new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(consumerFactory());
         return factory;
-    }
-
-    @Bean
-    public NewTopic createProductTopic() {
-        return TopicBuilder.name(Topics.PRODUCT_CREATED)
-                .partitions(1)
-                .replicas(1)
-                .configs(Map.of("min.insync.replicas", "1"))
-                .build();
     }
 }
