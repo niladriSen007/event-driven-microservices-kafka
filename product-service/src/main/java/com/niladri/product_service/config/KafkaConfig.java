@@ -35,12 +35,31 @@ public class KafkaConfig {
     @Value("${spring.kafka.consumer.group-id:product-service-group}")
     private String groupId;
 
+    @Value("${spring.kafka.producer.properties.acks:all}")
+    private String acks;
+
+    @Value("${spring.kafka.producer.properties.delivery.timeout.ms:120000}")
+    private String deliveryTimeoutMs;
+
+    @Value("${spring.kafka.producer.properties.linger.ms:0}")
+    private String lingerMs;
+
+    @Value("${spring.kafka.producer.properties.request.timeout.ms:30000}")
+    private String requestTimeoutMs;
+
     @Bean
     public ProducerFactory<String, Object> producerFactory() {
         Map<String, Object> producerProps = new HashMap<>();
         producerProps.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServer);
         producerProps.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
         producerProps.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JacksonJsonSerializer.class);
+        producerProps.put(ProducerConfig.ACKS_CONFIG, acks);
+        producerProps.put(ProducerConfig.DELIVERY_TIMEOUT_MS_CONFIG, deliveryTimeoutMs);
+        producerProps.put(ProducerConfig.LINGER_MS_CONFIG, lingerMs);
+        producerProps.put(ProducerConfig.REQUEST_TIMEOUT_MS_CONFIG, requestTimeoutMs);
+        producerProps.put(ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG, true);
+        producerProps.put(ProducerConfig.MAX_IN_FLIGHT_REQUESTS_PER_CONNECTION, 5);
+        // producerProps.put(ProducerConfig.RETRIES_CONFIG, Integer.MAX_VALUE);
         log.info("Kafka Producer Configured with bootstrap server: {}", bootstrapServer);
         return new DefaultKafkaProducerFactory<>(producerProps);
     }
