@@ -22,5 +22,6 @@
 		<module>common-dtos</module>
 		<module>product-service</module>
 		<module>notification-service</module>
+		<module>mock-service</module>
 	</modules>
 </project>
