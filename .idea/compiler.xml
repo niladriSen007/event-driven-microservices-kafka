@@ -18,6 +18,7 @@
           <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/1.18.42/lombok-1.18.42.jar" />
         </processorPath>
         <module name="mock-service" />
+        <module name="notification-service" />
       </profile>
     </annotationProcessing>
   </component>
