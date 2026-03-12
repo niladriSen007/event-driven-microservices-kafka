@@ -8,9 +8,11 @@ import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.kafka.common.serialization.StringSerializer;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 import org.springframework.kafka.config.TopicBuilder;
 import org.springframework.kafka.core.ConsumerFactory;
@@ -24,10 +26,14 @@ import org.springframework.kafka.support.serializer.JacksonJsonSerializer;
 import com.niladri.common.constants.Topics;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.kafka.transaction.KafkaTransactionManager;
 
 @Configuration
 @Slf4j
 public class KafkaConfig {
+
+    @Autowired
+    Environment  environment;
 
     @Value("${spring.kafka.bootstrap-servers:localhost:9092}")
     private String bootstrapServer;
@@ -59,6 +65,7 @@ public class KafkaConfig {
         producerProps.put(ProducerConfig.REQUEST_TIMEOUT_MS_CONFIG, requestTimeoutMs);
         producerProps.put(ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG, true);
         producerProps.put(ProducerConfig.MAX_IN_FLIGHT_REQUESTS_PER_CONNECTION, 5);
+        producerProps.put(ProducerConfig.TRANSACTIONAL_ID_CONFIG,environment.getProperty("spring.kafka.producer.transaction-id-prefix"));
         // producerProps.put(ProducerConfig.RETRIES_CONFIG, Integer.MAX_VALUE);
         log.info("Kafka Producer Configured with bootstrap server: {}", bootstrapServer);
         return new DefaultKafkaProducerFactory<>(producerProps);
@@ -79,6 +86,12 @@ public class KafkaConfig {
     @Bean
     public KafkaTemplate<String, Object> kafkaTemplate() {
         return new KafkaTemplate<>(producerFactory());
+    }
+
+
+    @Bean
+    KafkaTransactionManager<String,Object> kafkaTransactionManager() {
+        return new KafkaTransactionManager<>(producerFactory());
     }
 
     // We need this bean to consume messages from Kafka

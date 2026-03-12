@@ -14,6 +14,7 @@ spring:
         delivery.timeout.ms: 120000 # 2 minutes timeout for each request
         linger.ms: 0 # 0 ms delay between messages
         request.timeout.ms: 30000 # 30 seconds timeout for each request
+      transaction-id-prefix: product-service-${random.value}-
 
   datasource:
     url: jdbc:postgresql://localhost:5432/product_service_eda
@@ -28,3 +29,11 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
+
+logging:
+  level:
+    org:
+      springframework:
+        kafka:
+          transaction: TRACE
+        transaction: TRACE

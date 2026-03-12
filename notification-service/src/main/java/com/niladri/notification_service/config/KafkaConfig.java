@@ -50,6 +50,10 @@ public class KafkaConfig {
     @Value("${spring.kafka.producer.properties.request.timeout.ms:30000}")
     private String requestTimeoutMs;
 
+    @Value("${spring.kafka.consumer.isolation-level:READ_COMMITTED}")
+    String isolationLevel;
+
+
     @Bean
     public ProducerFactory<String, Object> producerFactory() {
         Map<String, Object> producerProps = new HashMap<>();
@@ -76,6 +80,7 @@ public class KafkaConfig {
         consumerProps.put(ConsumerConfig.GROUP_ID_CONFIG, groupId);
         consumerProps.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
         consumerProps.put(JacksonJsonDeserializer.TRUSTED_PACKAGES, "*");
+        consumerProps.put(ConsumerConfig.ISOLATION_LEVEL_CONFIG, isolationLevel.toLowerCase());
         log.info("Kafka Consumer Configured with bootstrap server: {}", bootstrapServer);
         return new DefaultKafkaConsumerFactory<>(consumerProps);
     }
